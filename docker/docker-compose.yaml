@@ -1,0 +1,22 @@
+services:
+  demand:
+    build:
+      dockerfile: ./demand/docker/Dockerfile
+    ports:
+      - 3002:3002
+    environment:
+      - SERVER_PORT=3002
+      - PG_URL=postgres://vollab:mypass@db/vollab
+      - PG_HOST=db
+      - PG_DB=vollab
+      - PG_USER=vollab
+      - PG_PASS=mypass
+      - NATS_HOST=nats
+      - JWT_KEY=jwt-key
+      - LOG_LEVEL=DEBUG
+    volumes:
+      - ./demand/src:/app/demand/src
+      - ./common:/app/common
+    depends_on:
+      - nats
+      - db
