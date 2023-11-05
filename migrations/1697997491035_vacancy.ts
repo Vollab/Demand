@@ -40,16 +40,13 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
 				notNull: true
 			},
 			state: {
-				type: 'varchar(30)',
-				notNull: true
+				type: 'varchar(30)'
 			},
 			city: {
-				type: 'varchar(30)',
-				notNull: true
+				type: 'varchar(30)'
 			},
 			street: {
-				type: 'varchar(30)',
-				notNull: true
+				type: 'varchar(30)'
 			},
 			created_at: {
 				type: 'timestamp with time zone',
