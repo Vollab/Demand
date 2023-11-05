@@ -15,6 +15,7 @@ services:
       - JWT_KEY=jwt-key
       - LOG_LEVEL=DEBUG
     volumes:
+      - ./demand/migrations:/app/demand/migrations
       - ./demand/src:/app/demand/src
       - ./common:/app/common
     depends_on:
