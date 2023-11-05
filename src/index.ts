@@ -1,4 +1,4 @@
-import { candidate_created_sub, orderer_created_sub, customer_updated_sub } from './events/sub'
+import * as subs from './events/sub'
 import { app } from './app'
 
 import { logger, checkEnv, database } from 'common/services'
@@ -19,9 +19,7 @@ const start = async () => {
 			max: 7
 		})
 
-		await orderer_created_sub.subscribe()
-		await customer_updated_sub.subscribe()
-		await candidate_created_sub.subscribe()
+		for await (const sub of Object.values(subs)) await sub.subscribe()
 
 		app.listen(process.env.SERVER_PORT!, () => logger.info(`${logger.BRIGHT('Listening on port:')} ${process.env.SERVER_PORT!}`))
 	} catch (error) {
