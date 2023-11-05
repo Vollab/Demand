@@ -3,31 +3,26 @@ import { MigrationBuilder, ColumnDefinitions } from 'node-pg-migrate'
 export const shorthands: ColumnDefinitions | undefined = undefined
 
 export async function up(pgm: MigrationBuilder): Promise<void> {
-	pgm.addType('demand_status', ['OPEN', 'IN_PROGRESS', 'COMPLETED', 'CANCELED'])
+	pgm.addType('enrollment_status', ['PENDING', 'REFUSED', 'APPROVED', 'ACCEPTED', 'WAIVER'])
 	pgm.createTable(
-		{ schema: 'demand', name: 'demand' },
+		{ schema: 'demand', name: 'enrollment' },
 		{
-			id: {
+			vacancy_id: {
 				type: 'uuid',
-				default: pgm.func('gen_random_uuid()'),
 				notNull: true,
-				primaryKey: true
+				primaryKey: true,
+				references: 'vacancy'
 			},
-			title: {
-				type: 'varchar(80)',
-				notNull: true
-			},
-			resume: {
-				type: 'text',
-				notNull: true
-			},
-			description: {
-				type: 'text',
-				notNull: true
+			candidate_id: {
+				type: 'uuid',
+				notNull: true,
+				primaryKey: true,
+				references: 'candidate'
 			},
 			status: {
-				type: 'demand_status',
-				notNull: true
+				type: 'enrollment_status',
+				notNull: true,
+				default: 'PENDING'
 			},
 			created_at: {
 				type: 'timestamp with time zone',
@@ -44,5 +39,6 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
 }
 
 export async function down(pgm: MigrationBuilder): Promise<void> {
-	pgm.dropTable('demand')
+	pgm.dropTable('enrollment')
+	pgm.dropType('enrollment_status')
 }

@@ -3,24 +3,35 @@ import { MigrationBuilder, ColumnDefinitions } from 'node-pg-migrate'
 export const shorthands: ColumnDefinitions | undefined = undefined
 
 export async function up(pgm: MigrationBuilder): Promise<void> {
-	pgm.addType('vacancy_candidate_status', ['PENDING', 'REFUSED', 'APPROVED', 'ACCEPTED', 'WAIVER'])
+	pgm.addType('demand_status', ['OPEN', 'IN_PROGRESS', 'COMPLETED', 'CANCELED'])
 	pgm.createTable(
-		{ schema: 'demand', name: 'vacancy_candidate' },
+		{ schema: 'demand', name: 'demand' },
 		{
-			vacancy_id: {
+			id: {
 				type: 'uuid',
+				default: pgm.func('gen_random_uuid()'),
 				notNull: true,
-				primaryKey: true,
-				references: 'vacancy'
+				primaryKey: true
 			},
-			candidate_id: {
+			orderer_id: {
 				type: 'uuid',
 				notNull: true,
-				primaryKey: true,
-				references: 'candidate'
+				references: 'orderer'
+			},
+			title: {
+				type: 'varchar(80)',
+				notNull: true
+			},
+			resume: {
+				type: 'text',
+				notNull: true
+			},
+			description: {
+				type: 'text',
+				notNull: true
 			},
 			status: {
-				type: 'vacancy_candidate_status',
+				type: 'demand_status',
 				notNull: true
 			},
 			created_at: {
@@ -38,5 +49,6 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
 }
 
 export async function down(pgm: MigrationBuilder): Promise<void> {
-	pgm.dropTable('vacancy_candidate')
+	pgm.dropTable('demand')
+	pgm.dropType('demand_status')
 }

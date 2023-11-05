@@ -6,7 +6,7 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
 	pgm.createTable(
 		{ schema: 'demand', name: 'candidate_area' },
 		{
-			candiadte_id: {
+			candidate_id: {
 				type: 'uuid',
 				notNull: true,
 				primaryKey: true,
