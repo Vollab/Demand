@@ -28,4 +28,4 @@ class OrderererUpdatedSub extends Subscriber<OrdererUpdatedEvent> {
 }
 
 const instance = OrderererUpdatedSub.instance
-export { instance as customer_updated_sub }
+export { instance as orderer_updated_sub }
