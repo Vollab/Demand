@@ -4,8 +4,8 @@ export interface User {
 	id: string
 	email: string
 	name: string
-	updated_at: string
-	created_at: string
+	updated_at: Date
+	created_at: Date
 }
 
 class UserModel {
@@ -20,8 +20,6 @@ class UserModel {
 				demand.user
 			WHERE
 				email = $1
-			LIMIT
-				1
 			;`,
 			[email]
 		)

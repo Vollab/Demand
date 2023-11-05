@@ -1,13 +1,9 @@
-import { database } from 'common/services'
 import { User } from './user'
 
-type PartialOmit<T extends object, U extends keyof T> = { [K in Exclude<keyof T, U>]?: T[K] }
+import { PartialOmit } from 'common/types/utility'
+import { database } from 'common/services'
 
-export interface Candidate extends User {
-	id: string
-	updated_at: string
-	created_at: string
-}
+export interface Candidate extends User {}
 
 class CandidateModel {
 	constructor(private db: typeof database) {}
@@ -21,8 +17,6 @@ class CandidateModel {
 				demand.candidate
 			WHERE
 				email = $1
-			LIMIT
-				1
 			;`,
 			[email]
 		)
@@ -44,8 +38,9 @@ class CandidateModel {
 		)
 	}
 
-	async update(id: Candidate['id'], candidate: PartialOmit<Candidate, 'id'>) {
+	async update(id: Candidate['id'], candidate: PartialOmit<Candidate, 'id' | 'email' | 'updated_at' | 'created_at'>) {
 		const entries = Object.entries(candidate).filter(e => e[1])
+		if (entries.length === 0) return []
 		const keys = entries.map((e, i) => `${e[0]} = $${i + 2}`)
 		const values = entries.map(e => e[1])
 
@@ -54,7 +49,7 @@ class CandidateModel {
 			UPDATE
 				demand.candidate
 			SET
-				${keys.join(', ')}${keys.length !== 0 ? ',' : ''} updated_at = now() at time zone 'utc'
+				${keys.join(', ')}
 			WHERE
 				id = $1
 			RETURNING
