@@ -32,7 +32,7 @@ router.patch(
 		const [vacancy] = await vacancy_model.update(vacancy_id, { demand_id, activity_area_id, name, description, work_mode, state, city, street })
 		if (!vacancy) throw new NotFoundError('Vacancy not found!')
 
-		res.status(201).json({ vacancy })
+		res.status(200).json({ vacancy })
 	}
 )
 
