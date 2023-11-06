@@ -19,6 +19,17 @@ type UpdateDemand = PartialOmit<Demand, 'id' | 'orderer_id' | 'updated_at' | 'cr
 class DemandModel {
 	constructor(private db: typeof database) {}
 
+	async findAll() {
+		return this.db.query<Demand>(
+			`
+			SELECT
+				*
+			FROM
+				demand.demand
+			;`
+		)
+	}
+
 	async findById(id: Demand['id']) {
 		return this.db.query<Demand>(
 			`
