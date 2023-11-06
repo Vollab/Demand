@@ -18,11 +18,11 @@ router.post(
 		const candidate_id = req.current_user!.user_id
 		const { demand_id, vacancy_id } = req.params
 
-		const [demand] = await demand_model.findByIdAndOrdererId(demand_id, candidate_id)
+		const [demand] = await demand_model.findById(demand_id)
 		if (!demand) throw new NotFoundError('Demand not found!')
 
 		const [vacancy] = await vacancy_model.findById(vacancy_id)
-		if (!vacancy) throw new NotFoundError('Demand not found!')
+		if (!vacancy) throw new NotFoundError('Vacancy not found!')
 
 		const [enrollment] = await enrollment_model.insert({ candidate_id, vacancy_id })
 

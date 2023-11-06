@@ -72,7 +72,7 @@ class EnrollmentModel {
 		return this.db.query<Enrollment>(
 			`
 			INSERT INTO
-				demand.enrollment (vacancy_id, candidate_id)
+				demand.enrollment (${keys.join(', ')})
 			VALUES
 				${placeholders}
 			RETURNING
