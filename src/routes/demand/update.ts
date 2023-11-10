@@ -4,6 +4,7 @@ import express from 'express'
 import { demand_model } from '../../models'
 
 import { require_auth, validate_request } from 'common/middlewares'
+import { demand_updated_pub } from 'demand/src/events/pub'
 
 const router = express.Router()
 
@@ -21,6 +22,8 @@ router.patch(
 		const { title, resume, description } = req.body
 
 		const [demand] = await demand_model.update(demand_id, orderer_id, { title, resume, description })
+
+		await demand_updated_pub.publish({ id: demand.id, status: demand.status })
 
 		res.status(200).json({ demand })
 	}

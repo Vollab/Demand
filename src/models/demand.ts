@@ -74,8 +74,8 @@ class DemandModel {
 		)
 	}
 
-	async insert(candidate: Omit<Demand, 'id' | 'updated_at' | 'created_at'>) {
-		const { orderer_id, title, resume, description, status } = candidate
+	async insert(demand: Omit<Demand, 'id' | 'updated_at' | 'created_at'>) {
+		const { orderer_id, title, resume, description, status } = demand
 
 		return this.db.query<Demand>(
 			`
@@ -90,8 +90,8 @@ class DemandModel {
 		)
 	}
 
-	async update(id: Demand['id'], orderer_id: Demand['orderer_id'], candidate: UpdateDemand) {
-		const entries = Object.entries(candidate).filter(e => e[1])
+	async update(id: Demand['id'], orderer_id: Demand['orderer_id'], demand: UpdateDemand) {
+		const entries = Object.entries(demand)
 		if (entries.length === 0) return []
 		const keys = entries.map((e, i) => `${e[0]} = $${i + 3}`)
 		const values = entries.map(e => e[1])

@@ -1,9 +1,9 @@
 import { JsMsg } from 'nats'
 
+import { orderer_created_consumer } from '../consumers'
 import { orderer_model } from '../../models'
 
 import { OrdererCreatedEvent } from 'common/types/events/orderer'
-import { orderer_created_consumer } from 'common/global/consumers'
 import { Subscriber } from 'common/services/nats'
 import { Subjects } from 'common/types/events'
 

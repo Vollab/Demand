@@ -4,6 +4,7 @@ import express from 'express'
 import { demand_model } from '../../models'
 
 import { require_auth, validate_request } from 'common/middlewares'
+import { demand_created_pub } from 'demand/src/events/pub'
 
 const router = express.Router()
 
@@ -19,6 +20,8 @@ router.post(
 		const { title, resume, description } = req.body
 
 		const [demand] = await demand_model.insert({ orderer_id, title, resume, description, status: 'OPEN' })
+
+		await demand_created_pub.publish({ id: demand.id, orderer_id: demand.orderer_id, status: demand.status })
 
 		res.status(201).json({ demand })
 	}
