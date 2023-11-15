@@ -1,44 +1,30 @@
-import { User } from './user'
-
 import { PartialOmit } from 'common/types/utility'
 import { database } from 'common/services'
 
-export interface Candidate extends User {}
+export interface Candidate {
+	id: string
+}
 
 class CandidateModel {
 	constructor(private db: typeof database) {}
 
-	async findByEmail(email: Candidate['email']) {
-		return this.db.query<Candidate>(
-			`
-			SELECT
-				*
-			FROM
-				demand.candidate
-			WHERE
-				email = $1
-			;`,
-			[email]
-		)
-	}
-
-	async insert(candidate: Omit<Candidate, 'updated_at' | 'created_at'>) {
-		const { id, name, email } = candidate
+	async insert(candidate: Candidate) {
+		const { id } = candidate
 
 		return this.db.query<Candidate>(
 			`
 			INSERT INTO
-				demand.candidate (id, name, email)
+				demand.candidate (id)
 			VALUES
-				($1, $2, $3)
+				($1)
 			RETURNING
 				*
 			;`,
-			[id, name, email]
+			[id]
 		)
 	}
 
-	async update(id: Candidate['id'], candidate: PartialOmit<Candidate, 'id' | 'email' | 'updated_at' | 'created_at'>) {
+	async update(id: Candidate['id'], candidate: PartialOmit<Candidate, 'id'>) {
 		const entries = Object.entries(candidate)
 		if (entries.length === 0) return []
 		const keys = entries.map((e, i) => `${e[0]} = $${i + 2}`)

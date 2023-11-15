@@ -1,43 +1,30 @@
-import { database } from 'common/services'
-import { User } from './user'
 import { PartialOmit } from 'common/types/utility'
+import { database } from 'common/services'
 
-export interface Orderer extends User {}
+export interface Orderer {
+	id: string
+}
 
 class OrdererModel {
 	constructor(private db: typeof database) {}
 
-	async findByEmail(email: Orderer['email']) {
-		return this.db.query<Orderer>(
-			`
-			SELECT
-				*
-			FROM
-				demand.orderer
-			WHERE
-				email = $1
-			;`,
-			[email]
-		)
-	}
-
-	async insert(orderer: Omit<Orderer, 'updated_at' | 'created_at'>) {
-		const { id, name, email } = orderer
+	async insert(orderer: Orderer) {
+		const { id } = orderer
 
 		return this.db.query<Orderer>(
 			`
 			INSERT INTO
-				demand.orderer (id, name, email)
+				demand.orderer (id)
 			VALUES
-				($1, $2, $3)
+				($1)
 			RETURNING
 				*
 			;`,
-			[id, name, email]
+			[id]
 		)
 	}
 
-	async update(id: Orderer['id'], orderer: PartialOmit<Orderer, 'id' | 'updated_at' | 'created_at'>) {
+	async update(id: Orderer['id'], orderer: PartialOmit<Orderer, 'id'>) {
 		const entries = Object.entries(orderer)
 		if (entries.length === 0) return []
 		const keys = entries.map((e, i) => `${e[0]} = $${i + 2}`)

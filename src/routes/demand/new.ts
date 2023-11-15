@@ -20,8 +20,9 @@ router.post(
 		const { title, resume, description } = req.body
 
 		const [demand] = await demand_model.insert({ orderer_id, title, resume, description, status: 'OPEN' })
+		const { id, status, created_at, updated_at } = demand
 
-		await demand_created_pub.publish({ id: demand.id, orderer_id: demand.orderer_id, status: demand.status })
+		await demand_created_pub.publish({ id, orderer_id, status, created_at, updated_at })
 
 		res.status(201).json({ demand })
 	}

@@ -1,7 +1,7 @@
 import { JsMsg } from 'nats'
 
+import { orderer_model, user_model } from '../../models'
 import { orderer_created_consumer } from '../consumers'
-import { orderer_model } from '../../models'
 
 import { OrdererCreatedEvent } from 'common/types/events/orderer'
 import { Subscriber } from 'common/services/nats'
@@ -19,9 +19,10 @@ class OrdererCreatedSub extends Subscriber<OrdererCreatedEvent> {
 	}
 
 	async onMessage(msg: JsMsg) {
-		const { id, name, email } = this.parseMessage(msg.data)
+		const { id, name, email, created_at, updated_at } = this.parseMessage(msg.data)
 
-		await orderer_model.insert({ id, name, email })
+		await user_model.insert({ id, name, email, created_at, updated_at })
+		await orderer_model.insert({ id })
 		msg.ack()
 	}
 }

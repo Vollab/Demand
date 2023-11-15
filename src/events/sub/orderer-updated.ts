@@ -1,7 +1,7 @@
 import { JsMsg } from 'nats'
 
+import { orderer_model, user_model } from '../../models'
 import { orderer_updated_consumer } from '../consumers'
-import { orderer_model } from '../../models'
 
 import { OrdererUpdatedEvent } from 'common/types/events/orderer'
 import { Subscriber } from 'common/services/nats'
@@ -19,9 +19,10 @@ class OrderererUpdatedSub extends Subscriber<OrdererUpdatedEvent> {
 	}
 
 	async onMessage(msg: JsMsg) {
-		const { id, name } = this.parseMessage(msg.data)
+		const { id, name, updated_at } = this.parseMessage(msg.data)
 
-		await orderer_model.update(id, { name })
+		await user_model.update(id, { name, updated_at })
+		await orderer_model.update(id, {})
 
 		msg.ack()
 	}

@@ -22,8 +22,9 @@ router.patch(
 		const { title, resume, description } = req.body
 
 		const [demand] = await demand_model.update(demand_id, orderer_id, { title, resume, description })
+		const { id, status, updated_at } = demand
 
-		await demand_updated_pub.publish({ id: demand.id, status: demand.status })
+		await demand_updated_pub.publish({ id, status, updated_at })
 
 		res.status(200).json({ demand })
 	}

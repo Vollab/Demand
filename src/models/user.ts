@@ -1,3 +1,4 @@
+import { PartialOmit } from 'common/types/utility'
 import { database } from 'common/services'
 
 export interface User {
@@ -11,17 +12,40 @@ export interface User {
 class UserModel {
 	constructor(private db: typeof database) {}
 
-	async findByEmail(email: User['email']) {
+	async insert(user: User) {
+		const { id, name, email, created_at, updated_at } = user
+
 		return this.db.query<User>(
 			`
-			SELECT
+			INSERT INTO
+				demand.user (id, name, email, created_at, updated_at)
+			VALUES
+				($1, $2, $3, $4, $5)
+			RETURNING
 				*
-			FROM
-				demand.user
-			WHERE
-				email = $1
 			;`,
-			[email]
+			[id, name, email, created_at, updated_at]
+		)
+	}
+
+	async update(id: User['id'], user: PartialOmit<User, 'id' | 'email' | 'created_at'>) {
+		const entries = Object.entries(user)
+		if (entries.length === 0) return []
+		const keys = entries.map((e, i) => `${e[0]} = $${i + 2}`)
+		const values = entries.map(e => e[1])
+
+		return this.db.query<User>(
+			`
+			UPDATE
+				demand.user
+			SET
+				${keys.join(', ')}
+			WHERE
+				id = $1
+			RETURNING
+				*
+			;`,
+			[id, ...values]
 		)
 	}
 }
