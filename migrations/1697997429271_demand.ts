@@ -16,7 +16,8 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
 			orderer_id: {
 				type: 'uuid',
 				notNull: true,
-				references: 'orderer'
+				references: 'orderer',
+				onDelete: 'CASCADE'
 			},
 			title: {
 				type: 'varchar(80)',
@@ -46,9 +47,17 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
 			}
 		}
 	)
+
+	pgm.createTrigger('demand', 'updated_at', {
+		when: 'BEFORE',
+		operation: 'UPDATE',
+		function: 'update_updated_at',
+		level: 'ROW'
+	})
 }
 
 export async function down(pgm: MigrationBuilder): Promise<void> {
+	pgm.dropTrigger('demand', 'updated_at', { ifExists: true })
 	pgm.dropTable('demand')
 	pgm.dropType('demand_status')
 }

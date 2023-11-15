@@ -14,18 +14,21 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
 			},
 			parent_id: {
 				type: 'uuid',
-				notNull: true,
-				references: 'comment'
+				notNull: false,
+				references: 'comment',
+				onDelete: 'CASCADE'
 			},
 			demand_id: {
 				type: 'uuid',
 				notNull: true,
-				references: 'demand'
+				references: 'demand',
+				onDelete: 'CASCADE'
 			},
 			user_id: {
 				type: 'uuid',
 				notNull: true,
-				references: 'user'
+				references: 'user',
+				onDelete: 'CASCADE'
 			},
 			text: {
 				type: 'text',
@@ -43,8 +46,16 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
 			}
 		}
 	)
+
+	pgm.createTrigger('comment', 'updated_at', {
+		when: 'BEFORE',
+		operation: 'UPDATE',
+		function: 'update_updated_at',
+		level: 'ROW'
+	})
 }
 
 export async function down(pgm: MigrationBuilder): Promise<void> {
+	pgm.dropTrigger('comment', 'updated_at', { ifExists: true })
 	pgm.dropTable('comment')
 }
