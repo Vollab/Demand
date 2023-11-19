@@ -31,14 +31,18 @@ class CommentModel {
 		return this.db.query<Comment>(
 			`
 			WITH RECURSIVE CommentTree AS (
-				SELECT
-					*
-				FROM
-					demand.comment
-				WHERE
-					demand_id = $1
-				AND
-					parent_id IS NULL
+				(
+					SELECT
+						*
+					FROM
+						demand.comment
+					WHERE
+						demand_id = $1
+					AND
+						parent_id IS NULL
+					ORDER BY
+						created_at
+				)
 			
 				UNION ALL
 			

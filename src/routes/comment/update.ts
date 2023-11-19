@@ -7,7 +7,7 @@ import { require_auth, validate_request } from 'common/middlewares'
 import { NotFoundError } from 'common/errors'
 
 const router = express.Router()
-// https://medium.com/swlh/how-to-implement-image-upload-using-express-and-multer-postgresql-c6de64679f2
+
 router.patch(
 	'/api/demands/:demand_id/comments/:comment_id',
 	require_auth(['orderer', 'candidate']),
