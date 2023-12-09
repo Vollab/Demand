@@ -14,7 +14,7 @@ class FullCandidateModel {
 			SELECT
 				*
 			FROM
-				candidate.full_candidate
+				demand.full_candidate
 			WHERE
 				email = $1
 			LIMIT

@@ -9,23 +9,23 @@ class FullOrdererModel {
 	constructor(private db: typeof database) {}
 
 	async findAll() {
-		return this.db.query<Orderer>(
+		return this.db.query<FullOrderer>(
 			`
 			SELECT
 				*
 			FROM
-				auth.full_orderer
+				demand.full_orderer
 			;`
 		)
 	}
 
-	async findByEmail(email: Orderer['email']) {
-		return this.db.query<Orderer>(
+	async findByEmail(email: FullOrderer['email']) {
+		return this.db.query<FullOrderer>(
 			`
 			SELECT
 				*
 			FROM
-				auth.full_orderer
+				demand.full_orderer
 			WHERE
 				email = $1
 			;`,

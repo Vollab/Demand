@@ -1,6 +1,8 @@
 import { PartialOmit } from 'common/types/utility'
 import { database } from 'common/services'
 
+import { FullOrderer } from './full-orderer'
+
 export type DemandStatus = 'OPEN' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELED'
 
 export interface Demand {
@@ -14,31 +16,57 @@ export interface Demand {
 	updated_at: Date
 }
 
+export interface DemandWithOrderer extends Omit<Demand, 'orderer_id'> {
+	orderer: Pick<FullOrderer, 'id' | 'name'>
+}
+
 type UpdateDemand = PartialOmit<Demand, 'id' | 'orderer_id' | 'updated_at' | 'created_at'>
 
 class DemandModel {
 	constructor(private db: typeof database) {}
 
 	async findAll() {
-		return this.db.query<Demand>(
+		return this.db.query<DemandWithOrderer>(
 			`
 			SELECT
-				*
+				d.id,
+				d.title,
+				d.resume,
+				d.description,
+				d.status,
+				d.created_at,
+				d.updated_at,
+				json_build_object('id', o.id, 'name', o.name) orderer
 			FROM
-				demand.demand
+				demand.demand d
+			JOIN
+				demand.full_orderer o
+			ON
+				d.orderer_id = o.id
 			;`
 		)
 	}
 
 	async findById(id: Demand['id']) {
-		return this.db.query<Demand>(
+		return this.db.query<DemandWithOrderer>(
 			`
 			SELECT
-				*
+				d.id,
+				d.title,
+				d.resume,
+				d.description,
+				d.status,
+				d.created_at,
+				d.updated_at,
+				json_build_object('id', o.id, 'name', o.name) orderer
 			FROM
-				demand.demand
+				demand.demand d
+			JOIN
+				demand.full_orderer o
+			ON
+				d.orderer_id = o.id
 			WHERE
-				id = $1
+				d.id = $1
 			;`,
 			[id]
 		)
