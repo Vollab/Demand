@@ -23,6 +23,7 @@ router.patch(
 		if (!demand) throw new NotFoundError('Demand not found!')
 
 		const [comment] = await comment_model.update(comment_id, user_id, text)
+		if (!comment) throw new NotFoundError('Comment not found!')
 
 		res.status(200).json({ comment })
 	}

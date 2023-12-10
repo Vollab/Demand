@@ -5,6 +5,7 @@ import { demand_model } from '../../models'
 
 import { require_auth, validate_request } from 'common/middlewares'
 import { demand_updated_pub } from 'demand/src/events/pub'
+import { NotFoundError } from 'common/errors'
 
 const router = express.Router()
 
@@ -22,6 +23,8 @@ router.patch(
 		const { title, resume, description } = req.body
 
 		const [demand] = await demand_model.update(demand_id, orderer_id, { title, resume, description })
+		if (!demand) throw new NotFoundError('Demand not found!')
+
 		const { id, status, updated_at } = demand
 
 		await demand_updated_pub.publish({ id, status, updated_at })
