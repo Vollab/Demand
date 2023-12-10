@@ -2,6 +2,7 @@ import { PartialOmit } from 'common/types/utility'
 import { database } from 'common/services'
 
 import { FullOrderer } from './full-orderer'
+import e from 'express'
 
 export type DemandStatus = 'OPEN' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELED'
 
@@ -119,7 +120,7 @@ class DemandModel {
 	}
 
 	async update(id: Demand['id'], orderer_id: Demand['orderer_id'], demand: UpdateDemand) {
-		const entries = Object.entries(demand)
+		const entries = Object.entries(demand).filter(e => e[1])
 		if (entries.length === 0) return []
 		const keys = entries.map((e, i) => `${e[0]} = $${i + 3}`)
 		const values = entries.map(e => e[1])
